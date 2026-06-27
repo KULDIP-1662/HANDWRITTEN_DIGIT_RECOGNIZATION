@@ -1,48 +1,86 @@
-# MNIST Handwritten Digit Classification with Convolutional Neural Networks (CNNs)
-This project implements a Convolutional Neural Network (CNN) to classify handwritten digits from the MNIST dataset.
+# Handwritten Digit Recognition
 
-## Dependencies
-This project requires the following Python libraries:
+A Convolutional Neural Network (CNN) that classifies handwritten digits (0–9) from the **MNIST** dataset. Built with TensorFlow / Keras.
 
-- tensorflow
-- keras
-- matplotlib.pyplot
-- numpy
-- pandas (optional, for data exploration)
-- Pillow (optional, for data exploration)
+---
 
-You can install them using pip:
-pip install tensorflow keras matplotlib numpy pandas pillow
+## Overview
 
-## Data
-The project uses the MNIST dataset of handwritten digits. The data is loaded using tensorflow.keras.datasets.mnist.load_data().
+| | |
+|---|---|
+| **Task** | Multi-class image classification (10 classes) |
+| **Dataset** | MNIST — 70,000 grayscale 28×28 images |
+| **Model** | Convolutional Neural Network |
+| **Framework** | TensorFlow / Keras |
+| **Trained model** | [`hdr.h5`](./hdr.h5) |
+
+---
+
+## Architecture
+
+A compact CNN suited to MNIST-scale inputs:
+
+- **Conv2D + ReLU** — feature extraction
+- **MaxPooling2D** — spatial down-sampling
+- **Conv2D + ReLU** — deeper features
+- **Flatten → Dense (ReLU) → Dropout** — classifier head
+- **Dense (Softmax, 10 units)** — class probabilities
+
+Loss: `sparse_categorical_crossentropy` · Optimizer: `Adam` · Metric: `accuracy`
+
+---
 
 ## Preprocessing
-The data is preprocessed in the following steps:
 
-Reshape the image data from (28, 28) to (28, 28, 1). This adds a channel dimension as the images are grayscale.
-Normalize the pixel values between 0 and 1 using MinMaxScaler from scikit-learn.
-One-hot encode the labels using tf.keras.utils.to_categorical.
+1. Load MNIST via `tensorflow.keras.datasets.mnist.load_data()`
+2. Reshape `(28, 28)` → `(28, 28, 1)` to add a channel dimension
+3. Normalize pixel values to `[0, 1]`
+4. Optional: one-hot encode labels for categorical training (or use sparse labels directly)
 
-## Model Architecture
-The model is a sequential CNN with the following architecture:
+---
 
-Conv2D (32 filters, kernel size 3x3, ReLU activation): Extracts features from the input images.  
-MaxPooling2D (pool size 2x2): Reduces the dimensionality of the feature maps.  
-Conv2D (64 filters, kernel size 3x3, ReLU activation): Extracts more complex features.  
-MaxPooling2D (pool size 2x2): Reduces the dimensionality of the feature maps again.  
-Flatten: Flattens the pooled feature maps into a 1D vector.  
-Dense (128 neurons, ReLU activation): First dense layer for classification.  
-Dense (10 neurons, softmax activation): Output layer with 10 neurons for the 10 digit classes.  
+## Tech Stack
 
-## Training
-The model is trained using the Adam optimizer and categorical cross-entropy loss function. Training is performed for a specified number of epochs and batch size.
+- **Python**, **TensorFlow / Keras**
+- **NumPy**, **Matplotlib**
+- **Pillow** (image I/O for custom inference)
 
-## Evaluation
-The model's performance is evaluated using the accuracy metric on the validation set.
+---
 
-## Running the Script
-Save the code as a Python script (e.g., mnist_cnn.py).
-Run the script from the command line:
+## How to Run
 
-# Note: This is a basic example. You can experiment with different hyperparameters (e.g., number of filters, layers, epochs) to improve the model's performance.
+```bash
+pip install tensorflow numpy matplotlib pillow
+```
+
+Open the notebook and run all cells:
+
+```bash
+jupyter notebook handwritten_digit_recognition.ipynb
+```
+
+To load and use the trained model directly:
+
+```python
+from tensorflow.keras.models import load_model
+model = load_model("hdr.h5")
+prediction = model.predict(your_28x28_grayscale_image_reshaped_to_1x28x28x1)
+```
+
+---
+
+## Repository Contents
+
+```
+.
+├── handwritten_digit_recognition.ipynb   # Training + evaluation notebook
+├── hdr.h5                                # Trained Keras model
+├── image.png                             # Sample / demo image
+└── README.md
+```
+
+---
+
+## License
+
+MIT
